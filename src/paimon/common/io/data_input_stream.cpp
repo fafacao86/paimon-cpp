@@ -120,6 +120,8 @@ template Result<int8_t> DataInputStream::ReadValue() const;
 template Result<int16_t> DataInputStream::ReadValue() const;
 template Result<uint16_t> DataInputStream::ReadValue() const;
 template Result<int32_t> DataInputStream::ReadValue() const;
+template Result<uint32_t> DataInputStream::ReadValue() const;
 template Result<int64_t> DataInputStream::ReadValue() const;
 template Result<float> DataInputStream::ReadValue() const;
+template Result<double> DataInputStream::ReadValue() const;
 }  // namespace paimon

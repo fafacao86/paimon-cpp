@@ -23,7 +23,17 @@ set(PAIMON_FILE_INDEX_SRC
     bsi/bit_slice_index_roaring_bitmap.cpp
     bloomfilter/bloom_filter_file_index.cpp
     bloomfilter/bloom_filter_file_index_factory.cpp
-    bloomfilter/fast_hash.cpp)
+    bloomfilter/fast_hash.cpp
+    # Range bitmap: build gradually after dictionary
+    # rangebitmap/range_bitmap_file_index.cpp
+    # rangebitmap/range_bitmap_file_index_factory.cpp
+    # rangebitmap/range_bitmap.cpp
+    # rangebitmap/bit_slice_index_bitmap.cpp
+    rangebitmap/dictionary/chunked_dictionary.cpp
+        rangebitmap/dictionary/fixed_length_chunk.cpp
+    # rangebitmap/dictionary/variable_length_chunk.cpp
+    rangebitmap/dictionary/key_factory.cpp
+)
 
 add_paimon_lib(paimon_file_index
                SOURCES
