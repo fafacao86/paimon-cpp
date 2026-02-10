@@ -21,6 +21,12 @@ set(PAIMON_FILE_INDEX_SRC
     bsi/bit_slice_index_bitmap_file_index.cpp
     bsi/bit_slice_index_bitmap_file_index_factory.cpp
     bsi/bit_slice_index_roaring_bitmap.cpp
+        rangebitmap/range_bitmap.cpp
+        rangebitmap/range_bitmap_file_index.cpp
+        rangebitmap/range_bitmap_file_index_factory.cpp
+        rangebitmap/dictionary/chunked_dictionary.cpp
+        rangebitmap/dictionary/key_factory.cpp
+        rangebitmap/dictionary/fixed_length_chunk.cpp
     bloomfilter/bloom_filter_file_index.cpp
     bloomfilter/bloom_filter_file_index_factory.cpp
     bloomfilter/fast_hash.cpp)
