@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-present Alibaba Inc.
+ * Copyright 2026-present Alibaba Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,9 @@ namespace paimon {
 
 class BitSliceIndexBitmap {
  public:
-    static constexpr int CURRENT_VERSION = 1;
     static Result<std::unique_ptr<BitSliceIndexBitmap>> Create(
         const std::shared_ptr<MemoryPool>& pool, const std::shared_ptr<InputStream>& input_stream,
         int32_t offset);
-
-    BitSliceIndexBitmap(const std::shared_ptr<MemoryPool>& pool, int32_t indexes_length,
-                        PAIMON_UNIQUE_PTR<Bytes> indexes, int32_t ebm_length, int32_t slices_size,
-                        const std::shared_ptr<InputStream>& input_stream, int32_t body_offset);
 
     Result<const RoaringBitmap32*> GetEmptyBitmap();
 
@@ -67,11 +62,18 @@ class BitSliceIndexBitmap {
         std::vector<RoaringBitmap32> slices_;
     };
 
+ public:
+    static constexpr int8_t CURRENT_VERSION = 1;
+
  private:
+    BitSliceIndexBitmap(const std::shared_ptr<MemoryPool>& pool, int32_t indexes_length,
+                        PAIMON_UNIQUE_PTR<Bytes> indexes, int32_t ebm_length, int32_t slices_size,
+                        const std::shared_ptr<InputStream>& input_stream, int32_t body_offset);
+
     std::shared_ptr<MemoryPool> pool_;
     bool initialized_;
     std::vector<std::optional<RoaringBitmap32>> bit_slices_;
-    std::optional<RoaringBitmap32> ebm;
+    std::optional<RoaringBitmap32> ebm_;
     std::shared_ptr<InputStream> input_stream_;
     int32_t body_offset_;
     PAIMON_UNIQUE_PTR<Bytes> indexes_;

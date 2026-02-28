@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-present Alibaba Inc.
+ * Copyright 2026-present Alibaba Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@ class MemoryPool;
 
 class RangeBitmap {
  public:
-    static constexpr int8_t VERSION = 1;
-
     static Result<std::unique_ptr<RangeBitmap>> Create(
         const std::shared_ptr<InputStream>& input_stream, int64_t offset, FieldType field_type,
         const std::shared_ptr<MemoryPool>& pool);
@@ -52,15 +50,20 @@ class RangeBitmap {
     Result<RoaringBitmap32> IsNull();
     Result<RoaringBitmap32> IsNotNull();
 
+ public:
+    static constexpr int8_t CURRENT_VERSION = 1;
+
  private:
-    Result<RoaringBitmap32> Not(RoaringBitmap32& bitmap);
+    Status Not(RoaringBitmap32* out);
 
     RangeBitmap(const std::shared_ptr<MemoryPool>& pool, int32_t rid, int32_t cardinality,
-                int32_t dictionary_offset, int32_t bsi_offset, Literal&& min, Literal&& max,
-                const std::shared_ptr<KeyFactory>& key_factory,
+                int32_t dictionary_offset, int32_t bsi_offset, const Literal& min,
+                const Literal& max, const std::shared_ptr<KeyFactory>& key_factory,
                 const std::shared_ptr<InputStream>& input_stream);
     Result<BitSliceIndexBitmap* const> GetBitSliceIndex();
     Result<Dictionary* const> GetDictionary();
+
+ private:
     std::shared_ptr<MemoryPool> pool_;
     int32_t rid_;
     int32_t cardinality_;

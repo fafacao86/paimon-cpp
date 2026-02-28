@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-present Alibaba Inc.
+ * Copyright 2026-present Alibaba Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,14 @@ class RangeBitmapFileIndex final : public FileIndexer {
     ~RangeBitmapFileIndex() override = default;
 
     Result<std::shared_ptr<FileIndexReader>> CreateReader(
-        ArrowSchema* arrow_schema, int32_t start, int32_t length,
+        ::ArrowSchema* arrow_schema, int32_t start, int32_t length,
         const std::shared_ptr<InputStream>& input_stream,
         const std::shared_ptr<MemoryPool>& pool) const override;
 
     Result<std::shared_ptr<FileIndexWriter>> CreateWriter(
-        ArrowSchema* arrow_schema, const std::shared_ptr<MemoryPool>& pool) const override;
+        ::ArrowSchema* arrow_schema, const std::shared_ptr<MemoryPool>& pool) const override;
 
+ public:
     static constexpr char CHUNK_SIZE[] = "chunk-size";
 
  private:
@@ -60,21 +61,23 @@ class RangeBitmapFileIndexWriter final : public FileIndexWriter {
         const std::shared_ptr<arrow::Schema>& arrow_schema, const std::string& field_name,
         const std::map<std::string, std::string>& options, const std::shared_ptr<MemoryPool>& pool);
 
-    Status AddBatch(ArrowArray* batch) override;
+    Status AddBatch(::ArrowArray* batch) override;
     Result<PAIMON_UNIQUE_PTR<Bytes>> SerializedBytes() const override;
 
     RangeBitmapFileIndexWriter(const std::shared_ptr<arrow::DataType>& arrow_type,
-                               FieldType field_type,
                                const std::map<std::string, std::string>& options,
-                               const std::shared_ptr<MemoryPool>& pool, int64_t chunk_size,
+                               const std::shared_ptr<MemoryPool>& pool,
                                const std::shared_ptr<KeyFactory>& key_factory,
                                std::unique_ptr<RangeBitmap::Appender> appender);
+
+ public:
+    static constexpr char DEFAULT_CHUNK_SIZE[] = "16kb";
+
+ private:
     std::shared_ptr<arrow::DataType> arrow_type_;
-    FieldType field_type_;
     std::map<std::string, std::string> options_;
     std::shared_ptr<MemoryPool> pool_;
     std::shared_ptr<KeyFactory> key_factory_;
-    int64_t chunk_size_;
     std::unique_ptr<RangeBitmap::Appender> appender_;
 };
 

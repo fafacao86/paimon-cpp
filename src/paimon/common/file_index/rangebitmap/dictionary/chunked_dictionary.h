@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-present Alibaba Inc.
+ * Copyright 2026-present Alibaba Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,9 @@ class MemoryPool;
 
 class ChunkedDictionary final : public Dictionary {
  public:
-    static constexpr int8_t CURRENT_VERSION = 1;
+    static Result<std::unique_ptr<ChunkedDictionary>> Create(
+        const std::shared_ptr<MemoryPool>& pool, FieldType field_type,
+        const std::shared_ptr<InputStream>& input_stream, int64_t offset);
 
     Result<int32_t> Find(const Literal& key) override;
 
@@ -51,6 +53,7 @@ class ChunkedDictionary final : public Dictionary {
      private:
         Status Flush();
 
+     private:
         std::shared_ptr<MemoryPool> pool_;
         std::shared_ptr<KeyFactory> key_factory_;
         int32_t chunk_size_bytes_;
@@ -65,21 +68,19 @@ class ChunkedDictionary final : public Dictionary {
         std::unique_ptr<MemorySegmentOutputStream> offsets_output_;
     };
 
-    static Result<std::unique_ptr<ChunkedDictionary>> Create(
-        const std::shared_ptr<MemoryPool>& pool, FieldType field_type,
-        const std::shared_ptr<InputStream>& input_stream, int64_t offset);
+public:
+    static constexpr int8_t CURRENT_VERSION = 1;
 
-    explicit ChunkedDictionary(const std::shared_ptr<MemoryPool>& pool,
-                               const std::shared_ptr<InputStream>& input_stream,
-                               int64_t start_of_dictionary, FieldType field_type,
-                               const std::shared_ptr<KeyFactory>& factory, int32_t size,
-                               int32_t offsets_length, int32_t chunks_length, int64_t body_offset);
+ private:
+    ChunkedDictionary(const std::shared_ptr<MemoryPool>& pool,
+                      const std::shared_ptr<InputStream>& input_stream,
+                      const std::shared_ptr<KeyFactory>& factory, int32_t size,
+                      int32_t offsets_length, int32_t chunks_length, int64_t body_offset);
+
     std::shared_ptr<MemoryPool> pool_;
-    FieldType field_type_;
     std::shared_ptr<KeyFactory> factory_;
 
     std::shared_ptr<InputStream> input_stream_;
-    int64_t start_of_dictionary_;
     int32_t size_;            // number of chunks
     int32_t offsets_length_;  // bytes length of offsets
     int32_t chunks_length_;   // bytes length of chunks
