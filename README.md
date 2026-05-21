@@ -123,6 +123,20 @@ The reading is divided into two stages:
 
 ## Getting Started
 
+## Experimental Rust SST Prototype
+
+仓库新增了一个实验性的 Rust 子工程：[rust](rust/README.md)，用于探索基于 Vortex 的
+lookup SST block codec。
+
+这个原型的目标是加速 lookup 点查，不是替换现有 `paimon-cpp` 的 SST 文件级组织逻辑。
+当前边界是：
+
+- `paimon-cpp`：负责 SST 结构、block split、index/footer/bloom filter 和文件写入流程
+- Rust：负责 block 内部列式布局、Vortex 轻量级压缩、batch-oriented Arrow C FFI
+
+目标调用方式是一整个 logical leaf block 调一次 FFI，而不是每行调一次 FFI。这样可以减少
+跨语言调用成本，并在输入侧通过 Arrow C Data Interface 做零拷贝导入。
+
 ## Development
 
 ### Clone the Repository

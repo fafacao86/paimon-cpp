@@ -1,4 +1,4 @@
-# Copyright 2024-present Alibaba Inc.
+# Copyright 2026-present Alibaba Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,40 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Build directories
-build
-build-release
-build-debug
-output
+[package]
+name = "paimon_vortex_sst"
+version = "0.1.0"
+edition = "2024"
 
-# IDE settings
-.idea
-.vscode
-.cache
+[lib]
+crate-type = ["cdylib", "rlib"]
 
-# Devcontainer configuration
-.devcontainer/*
-!.devcontainer/*.template
-
-# Temporary and backup files
-*~
-*.folded
-*.pyc
-__pycache__
-
-# Performance analysis and profiling files
-*.perf*
-perf.*
-*lcov.info
-profile.json
-FlameGraph
-
-# Shared objects and binary files
-*.so
-
-# Images
-*.svg
-
-# Third party dependencies archives
-third_party/*.tar.gz
-rust/target/*
+[dependencies]
+arrow = { version = "58", features = ["ffi"] }
+arrow-array = "58"
+arrow-schema = "58"
+vortex = { path = "/home/xiaoheng/RustProjects/vortex/vortex", features = ["files"] }
